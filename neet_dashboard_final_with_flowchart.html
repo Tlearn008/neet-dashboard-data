@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="en" class="bg-white text-black transition duration-300">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NEET 3D Video Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="transition-all duration-300">
+  <main class="p-4 max-w-6xl mx-auto">
+    <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
+      <h1 class="text-2xl sm:text-3xl font-bold text-center sm:text-left">NEET 3D Video Dashboard</h1>
+      <div class="flex gap-2">
+        <button onclick="downloadLogs()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-xl text-sm">📥 Download logs</button>
+        <button id="toggleDark" class="bg-gray-700 hover:bg-gray-900 text-white px-3 py-1 rounded-xl text-sm">🌙 Dark</button>
+      </div>
+    </div>
+
+    <div class="mb-4 flex flex-col sm:flex-row justify-between gap-2">
+      <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by topic or subject..." class="w-full sm:max-w-md px-3 py-2 border rounded-lg shadow-sm text-sm" />
+      <div id="stats" class="text-sm text-right text-gray-600"></div>
+    </div>
+
+    <div id="status" class="text-center text-gray-500">Loading...</div>
+    <div id="table-container" class="overflow-x-auto hidden">
+      <table class="w-full border rounded-xl shadow text-xs sm:text-sm md:text-base">
+        <thead class="bg-gray-100 dark:bg-gray-800 dark:text-white">
+          <tr>
+            <th class="p-2 border">Date</th>
+            <th class="p-2 border">Subject</th>
+            <th class="p-2 border">Topic</th>
+            <th class="p-2 border">YouTube Link</th>
+          </tr>
+        </thead>
+        <tbody id="log-rows"></tbody>
+      </table>
+    </div>
+
+    <section class="mt-8 text-center">
+      <h2 class="text-xl font-semibold mb-2">🧩 How It Works</h2>
+      <p class="mb-4 text-gray-600">A visual overview of your daily NEET + AMSIT automation system:</p>
+      <img src="neet_amsit_pipeline_flowchart.png" alt="Automation Flowchart" class="mx-auto max-w-full rounded-xl shadow-lg border">
+    </section>
+  </main>
+
+  <script>
+    const toggle = document.getElementById("toggleDark");
+    toggle.onclick = () => {
+      document.documentElement.classList.toggle("dark");
+      toggle.innerText = document.documentElement.classList.contains("dark") ? "☀️ Light" : "🌙 Dark";
+    };
+
+    function downloadLogs() {
+      fetch("logs.json").then(res => res.blob()).then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "logs.json";
+        a.click();
+      });
+    }
+
+    function filterTable() {
+      const filter = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#log-rows tr");
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? "" : "none";
+      });
+    }
+
+    fetch("logs.json")
+      .then(res => res.ok ? res.json() : Promise.reject())
+      .then(data => {
+        const logs = data.reverse();
+        const tbody = document.getElementById("log-rows");
+        const subjectCounts = { Biology: 0, Physics: 0, Chemistry: 0, "Mental Ability": 0, "Logical Reasoning": 0, "General Science": 0 };
+        logs.forEach(log => {
+          subjectCounts[log.subject] = (subjectCounts[log.subject] || 0) + 1;
+          const row = document.createElement("tr");
+          row.className = "hover:bg-gray-50 dark:hover:bg-gray-700";
+          row.innerHTML = `
+            <td class="p-2 border whitespace-nowrap">${log.date}</td>
+            <td class="p-2 border">${log.subject}</td>
+            <td class="p-2 border">${log.topic}</td>
+            <td class="p-2 border text-blue-600">
+              <a href="${log.youtube_link}" target="_blank">View Video</a>
+            </td>`;
+          tbody.appendChild(row);
+        });
+
+        const total = logs.length;
+        const stats = Object.entries(subjectCounts)
+          .map(([sub, count]) => `${sub}: ${count}`)
+          .join(" | ");
+        document.getElementById("stats").innerText = `📊 Total: ${total} | ` + stats;
+
+        document.getElementById("status").style.display = "none";
+        document.getElementById("table-container").classList.remove("hidden");
+      })
+      .catch(() => {
+        document.getElementById("status").textContent = "⚠️ Failed to load logs.";
+      });
+  </script>
+</body>
+</html>
