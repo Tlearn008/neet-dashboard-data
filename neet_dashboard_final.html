@@ -1,1 +1,96 @@
 <!-- Paste will be provided in next message due to size -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEET 3D Video Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-color: #141414;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    th, td {
+      border-color: #333;
+    }
+    .netflix-header {
+      color: #e50914;
+      font-size: 2.5rem;
+      font-weight: bold;
+    }
+    .subject-tag {
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .subject-Biology { background: #10b981; color: #fff; }
+    .subject-Physics { background: #3b82f6; color: #fff; }
+    .subject-Chemistry { background: #f59e0b; color: #fff; }
+    .subject-Mental { background: #8b5cf6; color: #fff; }
+  </style>
+</head>
+<body>
+  <main class="p-6 max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <div class="netflix-header">T</div>
+      <button id="toggleDark" class="bg-gray-800 px-3 py-1 text-sm rounded-lg hover:bg-gray-600">🌙 Dark</button>
+    </div>
+    <input id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by topic or subject..." class="w-full mb-4 p-2 rounded bg-gray-900 text-white" />
+    <div class="text-sm mb-4" id="stats"></div>
+    <table class="w-full text-left rounded overflow-hidden">
+      <thead class="bg-gray-800">
+        <tr>
+          <th class="p-2">Date</th>
+          <th class="p-2">Subject</th>
+          <th class="p-2">Topic</th>
+          <th class="p-2">YouTube Link</th>
+        </tr>
+      </thead>
+      <tbody id="log-rows"></tbody>
+    </table>
+    <section class="mt-10 text-center">
+      <h2 class="text-xl font-bold text-red-500">🧩 How It Works</h2>
+      <p class="text-gray-300 mb-4">A visual overview of your daily NEET + AMSIT automation system:</p>
+      <img src="neet_amsit_pipeline_flowchart.png" class="mx-auto rounded-xl max-w-full" alt="Automation Flowchart" />
+    </section>
+  </main>
+  <script>
+    document.getElementById("toggleDark").onclick = function () {
+      document.body.classList.toggle("bg-white");
+      document.body.classList.toggle("text-black");
+    };
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const rows = document.querySelectorAll("#log-rows tr");
+      rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
+      });
+    }
+    fetch("logs.json")
+      .then(res => res.json())
+      .then(data => {
+        const logs = data.reverse();
+        const tbody = document.getElementById("log-rows");
+        const subjectCounts = {};
+        logs.forEach(log => {
+          subjectCounts[log.subject] = (subjectCounts[log.subject] || 0) + 1;
+          const tr = document.createElement("tr");
+          const tagClass = `subject-${log.subject.replace(/\s+/g, '')}`;
+          tr.innerHTML = `
+            <td class="p-2">${log.date}</td>
+            <td class="p-2"><span class="subject-tag ${tagClass}">${log.subject}</span></td>
+            <td class="p-2">${log.topic}</td>
+            <td class="p-2 text-red-400"><a href="${log.youtube_link}" target="_blank">View Video</a></td>
+          `;
+          tbody.appendChild(tr);
+        });
+        const total = logs.length;
+        const stats = Object.entries(subjectCounts).map(([k,v]) => `${k}: ${v}`).join(" | ");
+        document.getElementById("stats").textContent = `🎬 Total: ${total} | ` + stats;
+      });
+  </script>
+</body>
+</html>
