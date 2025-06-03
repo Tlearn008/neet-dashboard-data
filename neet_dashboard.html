@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NEET 3D Video Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-white text-gray-800">
+    <main class="p-4 max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-4 text-center">NEET 3D Video Dashboard</h1>
+      <div id="status" class="text-center text-gray-500">Loading...</div>
+      <div id="table-container" class="overflow-x-auto hidden">
+        <table class="w-full border rounded-xl shadow-md text-sm md:text-base">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="p-2 border">Date</th>
+              <th class="p-2 border">Subject</th>
+              <th class="p-2 border">Topic</th>
+              <th class="p-2 border">YouTube Link</th>
+            </tr>
+          </thead>
+          <tbody id="log-rows"></tbody>
+        </table>
+      </div>
+    </main>
+
+    <script>
+      fetch("logs.json")
+        .then((res) => {
+          if (!res.ok) throw new Error("Network response was not ok");
+          return res.json();
+        })
+        .then((data) => {
+          const logs = data.reverse();
+          const tableContainer = document.getElementById("table-container");
+          const status = document.getElementById("status");
+          const tbody = document.getElementById("log-rows");
+
+          if (logs.length === 0) {
+            status.textContent = "No logs available.";
+            return;
+          }
+
+          logs.forEach((log) => {
+            const row = document.createElement("tr");
+            row.className = "hover:bg-gray-50";
+            row.innerHTML = \`
+              <td class="p-2 border whitespace-nowrap">\${log.date}</td>
+              <td class="p-2 border">\${log.subject}</td>
+              <td class="p-2 border">\${log.topic}</td>
+              <td class="p-2 border text-blue-600">
+                <a href="\${log.youtube_link}" target="_blank" rel="noopener noreferrer">View Video</a>
+              </td>\`;
+            tbody.appendChild(row);
+          });
+
+          status.style.display = "none";
+          tableContainer.classList.remove("hidden");
+        })
+        .catch((err) => {
+          document.getElementById("status").textContent = "Failed to load logs.";
+          console.error("Fetch error:", err);
+        });
+    </script>
+  </body>
+</html>
