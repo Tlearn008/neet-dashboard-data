@@ -2,112 +2,102 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tlearn Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tlearn NEET/AMSIT Video Dashboard</title>
   <style>
     body {
-      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #e0f7fa;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #121212;
-      color: #f0f0f0;
-    }
-    header {
-      background-color: #1f1f1f;
-      padding: 1rem;
       text-align: center;
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #00e0ff;
     }
-    .dashboard {
+
+    h1 {
+      margin: 20px 0;
+      color: #00e5ff;
+    }
+
+    #video-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1rem;
-      padding: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
     }
-    .card {
+
+    .video-card {
       background-color: #1e1e1e;
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 8px rgba(0, 229, 255, 0.1);
+      transition: transform 0.2s;
     }
-    .card:hover {
-      transform: scale(1.02);
+
+    .video-card:hover {
+      transform: translateY(-5px);
     }
-    .card h3 {
-      margin-top: 0;
-      color: #00d8ff;
+
+    .video-card h3 {
+      margin: 10px 0 5px;
+      color: #00e5ff;
     }
-    .card p {
-      margin: 0.5rem 0;
+
+    .video-card p {
+      margin: 0 0 10px;
+      color: #b0bec5;
     }
-    .links a {
-      color: #4fc3f7;
-      margin-right: 1rem;
+
+    .video-card a {
       text-decoration: none;
-      font-weight: 500;
+      color: #80d8ff;
+      font-weight: bold;
+      margin: 0 8px;
     }
-    .links a:hover {
-      text-decoration: underline;
-    }
+
     footer {
-      text-align: center;
-      padding: 1rem;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
       color: #888;
     }
   </style>
 </head>
 <body>
-  <header>Tlearn NEET/AMSIT Video Dashboard</header>
-  <div class="dashboard" id="dashboard"></div>
+
+  <h1>Tlearn NEET/AMSIT Video Dashboard</h1>
+
+  <div id="video-container"></div>
+
   <footer>
-    &copy; <span id="year"></span> Tlearn Automation | Built with ❤️
+    © 2025 Tlearn Automation | Built with ❤️
   </footer>
 
   <script>
     fetch("data.json")
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById("video-container");
 
-    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyiZK-wcKndwAyNLHIb3V8_0e80T-Bz6PQrexvhEE7HapotXu0oMJQR5sDrw-8aMPM4FQ/exec';
-
-    async function fetchData() {
-      try {
-        const response = await fetch(SHEET_URL);
-        const json = await response.json();
-        return json.data || [];
-      } catch (err) {
-        console.error('Failed to load data:', err);
-        return [];
-      }
-    }
-
-    function createCard(item) {
-      return `
-        <div class="card">
-          <h3>${item.Topic || 'Untitled Topic'}</h3>
-          <p><strong>Subject:</strong> ${item.Subject || 'N/A'}</p>
-          <p><strong>Date:</strong> ${item.Date || 'N/A'}</p>
-          <p><strong>Status:</strong> ${item.Status || 'Processing'}</p>
-          <div class="links">
-            ${item.ViewLink ? `<a href="${item.ViewLink}" target="_blank">View</a>` : ''}
-            ${item.DownloadLink ? `<a href="${item.DownloadLink}" target="_blank">Download</a>` : ''}
-          </div>
-        </div>
-      `;
-    }
-
-    async function renderDashboard() {
-      const dashboard = document.getElementById('dashboard');
-      dashboard.innerHTML = '<p>Loading...</p>';
-      const data = await fetchData();
-      dashboard.innerHTML = data.map(createCard).join('');
-    }
-
-    document.getElementById('year').textContent = new Date().getFullYear();
-    renderDashboard();
-    setInterval(renderDashboard, 60000); // Auto-refresh every 60s
+        data.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "video-card";
+          card.innerHTML = `
+            <h3>${item.Topic}</h3>
+            <p>📅 ${item.Date}</p>
+            <a href="${item.Video_Link}" target="_blank">▶ Watch</a>
+            <a href="${item.Download_Link}" target="_blank">⬇ Download</a>
+          `;
+          container.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error("Failed to load data.json:", error);
+        document.getElementById("video-container").innerHTML = `<p style="color: red;">Error loading videos. Please try again later.</p>`;
+      });
   </script>
+
 </body>
 </html>
