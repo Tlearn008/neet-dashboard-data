@@ -2,22 +2,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NEET 3D Video Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tlearn Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body {
       background-color: #141414;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
+      animation: slideIn 1s ease-out;
     }
-    th, td {
-      border-color: #333;
+    @keyframes slideIn {
+      0% { transform: translateX(100%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
     }
+    th, td { border: 1px solid #333; }
     .netflix-header {
       color: #e50914;
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: bold;
     }
     .subject-tag {
@@ -30,6 +33,11 @@
     .subject-Physics { background: #3b82f6; color: #fff; }
     .subject-Chemistry { background: #f59e0b; color: #fff; }
     .subject-Mental { background: #8b5cf6; color: #fff; }
+    .total-highlight {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #e50914;
+    }
   </style>
 </head>
 <body>
@@ -38,19 +46,22 @@
       <div class="netflix-header">T</div>
       <button id="toggleDark" class="bg-gray-800 px-3 py-1 text-sm rounded-lg hover:bg-gray-600">🌙 Dark</button>
     </div>
+    <h1 class="text-3xl font-bold text-center text-red-500 mb-6">Tlearn Dashboard</h1>
     <input id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by topic or subject..." class="w-full mb-4 p-2 rounded bg-gray-900 text-white" />
-    <div class="text-sm mb-4" id="stats"></div>
-    <table class="w-full text-left rounded overflow-hidden">
-      <thead class="bg-gray-800">
-        <tr>
-          <th class="p-2">Date</th>
-          <th class="p-2">Subject</th>
-          <th class="p-2">Topic</th>
-          <th class="p-2">YouTube Link</th>
-        </tr>
-      </thead>
-      <tbody id="log-rows"></tbody>
-    </table>
+    <div class="text-center mb-4" id="stats" class="total-highlight"></div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-left rounded overflow-hidden border border-gray-700">
+        <thead class="bg-gray-800">
+          <tr>
+            <th class="p-2">Date</th>
+            <th class="p-2">Subject</th>
+            <th class="p-2">Topic</th>
+            <th class="p-2">YouTube Link</th>
+          </tr>
+        </thead>
+        <tbody id="log-rows"></tbody>
+      </table>
+    </div>
     <section class="mt-10 text-center">
       <h2 class="text-xl font-bold text-red-500">🧩 How It Works</h2>
       <p class="text-gray-300 mb-4">A visual overview of your daily NEET + AMSIT automation system:</p>
@@ -89,8 +100,9 @@
         });
         const total = logs.length;
         const stats = Object.entries(subjectCounts).map(([k,v]) => `${k}: ${v}`).join(" | ");
-        document.getElementById("stats").textContent = `🎬 Total: ${total} | ` + stats;
+        document.getElementById("stats").innerHTML = `🎬 <span class='total-highlight'>Total Videos: ${total}</span><br>${stats}`;
       });
   </script>
 </body>
 </html>
+
