@@ -100,4 +100,12 @@
   </script>
 
 </body>
-</html>
+</html>fetch('https://tlearn008.github.io/neet-dashboard-data/data.json')
+  .then(response => response.json())
+  .then(data => {
+    // your logic to display videos
+  })
+  .catch(error => {
+    document.getElementById("content").innerHTML = "<p style='color:red'>Error loading videos. Please try again later.</p>";
+  });
+
