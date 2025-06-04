@@ -1,0 +1,25 @@
+name: 🔁 Force Pages Update Daily
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Runs daily at 6:00 AM UTC
+  workflow_dispatch:    # Allows manual trigger from GitHub UI
+
+jobs:
+  force-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: ✏️ Touch HTML File to Update Timestamp
+        run: |
+          echo "<!-- Updated: $(date -u) -->" >> neet_dashboard_final.html
+
+      - name: 📤 Commit & Push Update
+        run: |
+          git config user.name "tlearn-bot"
+          git config user.email "bot@tlearn.com"
+          git add neet_dashboard_final.html
+          git commit -m "🔁 Auto-update dashboard to trigger GitHub Pages"
+          git push
