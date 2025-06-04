@@ -89,3 +89,25 @@
 
 </body>
 </html>
+<script>
+fetch("data.json")
+  .then(response => response.json())
+  .then(data => {
+    // loop through each video
+    const container = document.createElement("div");
+    data.forEach(video => {
+      const box = document.createElement("div");
+      box.innerHTML = `
+        <h3>${video.title}</h3>
+        <iframe src="${video.video_url}" width="560" height="315"></iframe>
+        <br>
+        <a href="${video.download_url}" target="_blank">Download</a>
+        <hr>`;
+      container.appendChild(box);
+    });
+    document.body.appendChild(container);
+  })
+  .catch(error => {
+    document.body.innerHTML += `<p style="color:red;">Error loading videos. Please try again later.</p>`;
+  });
+</script>
