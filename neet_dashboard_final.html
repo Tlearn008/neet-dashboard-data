@@ -76,31 +76,7 @@
   </footer>
 
   <script>
-    fetch("data.json")
-      .then(response => response.json())
-      .then(data => {
-        const container = document.getElementById("video-container");
-
-        data.forEach(item => {
-          const card = document.createElement("div");
-          card.className = "video-card";
-          card.innerHTML = `
-            <h3>${item.Topic}</h3>
-            <p>📅 ${item.Date}</p>
-            <a href="${item.Video_Link}" target="_blank">▶ Watch</a>
-            <a href="${item.Download_Link}" target="_blank">⬇ Download</a>
-          `;
-          container.appendChild(card);
-        });
-      })
-      .catch(error => {
-        console.error("Failed to load data.json:", error);
-        document.getElementById("video-container").innerHTML = `<p style="color: red;">Error loading videos. Please try again later.</p>`;
-      });
-  </script>
-
-</body>
-</html>fetch('https://tlearn008.github.io/neet-dashboard-data/data.json')
+   fetch('https://tlearn008.github.io/neet-dashboard-data/data.json')
   .then(response => response.json())
   .then(data => {
     // your logic to display videos
@@ -109,3 +85,7 @@
     document.getElementById("content").innerHTML = "<p style='color:red'>Error loading videos. Please try again later.</p>";
   });
 
+  </script>
+
+</body>
+</html>
