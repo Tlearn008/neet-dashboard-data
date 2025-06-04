@@ -2,155 +2,110 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tlearn Dashboard | NEET Pipeline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tlearn Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap" rel="stylesheet" />
   <style>
     body {
+      font-family: 'Roboto', sans-serif;
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #141414;
-      color: white;
-      transition: background 0.3s, color 0.3s;
+      padding: 0;
+      background-color: #121212;
+      color: #f0f0f0;
     }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
+    header {
+      background-color: #1f1f1f;
       padding: 1rem;
-      align-items: center;
-      background: #000;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #00e0ff;
     }
-
-    .title {
-      font-size: 1.5rem;
-      font-weight: bold;
-    }
-
-    .filters {
-      display: flex;
-      gap: 0.5rem;
-      margin: 1rem;
-    }
-
-    select, input[type="text"] {
-      padding: 0.5rem;
-      border-radius: 5px;
-      border: none;
-      font-size: 1rem;
-    }
-
-    .grid {
+    .dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       gap: 1rem;
       padding: 1rem;
     }
-
     .card {
-      background: #1e1e1e;
-      border-radius: 1rem;
+      background-color: #1e1e1e;
+      border-radius: 16px;
       padding: 1rem;
-      box-shadow: 0 0 10px #000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s;
     }
-
-    .card a {
-      color: #1db954;
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card h3 {
+      margin-top: 0;
+      color: #00d8ff;
+    }
+    .card p {
+      margin: 0.5rem 0;
+    }
+    .links a {
+      color: #4fc3f7;
+      margin-right: 1rem;
       text-decoration: none;
+      font-weight: 500;
     }
-
-    .footer {
+    .links a:hover {
+      text-decoration: underline;
+    }
+    footer {
       text-align: center;
-      font-size: 0.9rem;
       padding: 1rem;
-      color: #aaa;
-    }
-
-    .dark-toggle {
-      cursor: pointer;
-      font-size: 0.9rem;
-      padding: 0.3rem 1rem;
-      border-radius: 20px;
-      background: #333;
-      color: #fff;
-    }
-
-    .button-container {
-      text-align: center;
-      margin: 1rem 0;
-    }
-
-    .launch-button {
-      background: red;
-      color: white;
-      font-size: 1.1rem;
-      padding: 0.7rem 1.5rem;
-      border-radius: 30px;
-      border: none;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    .log-box, .shorts-box {
-      background: #222;
-      padding: 1rem;
-      margin: 1rem;
-      border-radius: 1rem;
+      color: #888;
     }
   </style>
 </head>
 <body>
-
-  <div class="header">
-    <div class="title">Tlearn Dashboard</div>
-    <input type="text" id="searchBar" placeholder="Search... 🔍" />
-    <div class="dark-toggle" onclick="toggleTheme()">Toggle Theme</div>
-  </div>
-
-  <div class="filters">
-    <select><option>Date</option></select>
-    <select><option>Subject</option></select>
-    <select><option>Topic</option></select>
-    <select><option>YouTube Link</option></select>
-  </div>
-
-  <div class="button-container">
-    <button class="launch-button" disabled>⏳ Generating... Please wait</button>
-    <p id="status">⏰ Last Pipeline Run: <span id="lastRun">Fetching...</span></p>
-  </div>
-
-  <div class="grid" id="videoGrid">
-    <!-- Example Card -->
-    <div class="card">
-      <h3>Photosynthesis Explained</h3>
-      <p>Subject: Biology</p>
-      <p>Date: 2025-06-04</p>
-      <a href="https://youtube.com/yourvideo" target="_blank">▶ Watch</a> |
-      <a href="https://drive.google.com/yourvideo" target="_blank">⬇ Download</a>
-    </div>
-  </div>
-
-  <div class="log-box">
-    <h3>📜 Live Log Viewer</h3>
-    <iframe src="https://script.google.com/macros/s/YOUR_LOG_VIEWER_SCRIPT_ID/exec" width="100%" height="300" style="border:none;"></iframe>
-  </div>
-
-  <div class="shorts-box">
-    <h3>🎬 YouTube Shorts Tracker</h3>
-    <p>Last Generated: June 4, 2025<br>
-    Auto-subtitles: ✅ | Auto-upload: ✅</p>
-  </div>
-
-  <div class="footer">© 2025 Tlearn. NEET AMSIT Video Generator. Netflix-style UI.</div>
+  <header>Tlearn NEET/AMSIT Video Dashboard</header>
+  <div class="dashboard" id="dashboard"></div>
+  <footer>
+    &copy; <span id="year"></span> Tlearn Automation | Built with ❤️
+  </footer>
 
   <script>
-    function toggleTheme() {
-      const body = document.body;
-      body.style.backgroundColor = body.style.backgroundColor === "white" ? "#141414" : "white";
-      body.style.color = body.style.color === "black" ? "white" : "black";
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyiZK-wcKndwAyNLHIb3V8_0e80T-Bz6PQrexvhEE7HapotXu0oMJQR5sDrw-8aMPM4FQ/exec';
+
+    async function fetchData() {
+      try {
+        const response = await fetch(SHEET_URL);
+        const json = await response.json();
+        return json.data || [];
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        return [];
+      }
     }
 
-    // Example: Simulate Last Run Fetch
-    document.getElementById("lastRun").textContent = new Date().toLocaleString();
+    function createCard(item) {
+      return `
+        <div class="card">
+          <h3>${item.Topic || 'Untitled Topic'}</h3>
+          <p><strong>Subject:</strong> ${item.Subject || 'N/A'}</p>
+          <p><strong>Date:</strong> ${item.Date || 'N/A'}</p>
+          <p><strong>Status:</strong> ${item.Status || 'Processing'}</p>
+          <div class="links">
+            ${item.ViewLink ? `<a href="${item.ViewLink}" target="_blank">View</a>` : ''}
+            ${item.DownloadLink ? `<a href="${item.DownloadLink}" target="_blank">Download</a>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    async function renderDashboard() {
+      const dashboard = document.getElementById('dashboard');
+      dashboard.innerHTML = '<p>Loading...</p>';
+      const data = await fetchData();
+      dashboard.innerHTML = data.map(createCard).join('');
+    }
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderDashboard();
+    setInterval(renderDashboard, 60000); // Auto-refresh every 60s
   </script>
 </body>
 </html>
