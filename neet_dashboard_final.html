@@ -1,38 +1,156 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tlearn Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tlearn Dashboard | NEET Pipeline</title>
   <style>
-    body { font-family: Arial, sans-serif; background-color: #121212; color: white; }
-    h1 { color: red; text-align: center; }
-    table { width: 90%; margin: 2rem auto; border-collapse: collapse; }
-    th, td { border: 1px solid #333; padding: 10px; text-align: center; }
-    th { background-color: #222; }
-    td a { color: #ff4c4c; text-decoration: none; }
-    .section { text-align: center; margin-top: 2rem; }
-    .button { margin: 5px; padding: 10px 20px; background-color: #e50914; color: white; border: none; border-radius: 8px; cursor: pointer; }
-    .button:hover { background-color: #ff2a1a; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #141414;
+      color: white;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      align-items: center;
+      background: #000;
+    }
+
+    .title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1rem;
+    }
+
+    select, input[type="text"] {
+      padding: 0.5rem;
+      border-radius: 5px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #1e1e1e;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 0 10px #000;
+    }
+
+    .card a {
+      color: #1db954;
+      text-decoration: none;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 1rem;
+      color: #aaa;
+    }
+
+    .dark-toggle {
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      background: #333;
+      color: #fff;
+    }
+
+    .button-container {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    .launch-button {
+      background: red;
+      color: white;
+      font-size: 1.1rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 30px;
+      border: none;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .log-box, .shorts-box {
+      background: #222;
+      padding: 1rem;
+      margin: 1rem;
+      border-radius: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h1>Tlearn Dashboard</h1>
-  <div class="section">
-    <strong>🎞️ Total Videos: 2</strong><br>
-    Mental Ability: 1 | Biology: 1
+
+  <div class="header">
+    <div class="title">Tlearn Dashboard</div>
+    <input type="text" id="searchBar" placeholder="Search... 🔍" />
+    <div class="dark-toggle" onclick="toggleTheme()">Toggle Theme</div>
   </div>
-  <table>
-    <tr><th>Date</th><th>Subject</th><th>Topic</th><th>YouTube Link</th></tr>
-    <tr><td>2025-06-03</td><td><strong>Mental Ability</strong></td><td>Number Puzzle</td><td><a href="#">View Video</a></td></tr>
-    <tr><td>2025-06-03</td><td><span style="background: green; padding: 2px 5px; border-radius: 5px;">Biology</span></td><td>Photosynthesis</td><td><a href="#">View Video</a></td></tr>
-  </table>
-  <div class="section">
-    <h3>❓ How It Works</h3>
-    <p>A visual overview of your daily NEET + AMSIT automation system:</p>
-    <a href="https://github.com/Tlearn008/tlearn_automation_package" class="button">Automation Flowchart</a>
-    <a href="https://colab.research.google.com/drive/1knjiz0SGr-BVN-KFJeQaasMjA2hu_uqb" class="button">Launch Pipeline 🚀</a>
+
+  <div class="filters">
+    <select><option>Date</option></select>
+    <select><option>Subject</option></select>
+    <select><option>Topic</option></select>
+    <select><option>YouTube Link</option></select>
   </div>
+
+  <div class="button-container">
+    <button class="launch-button" disabled>⏳ Generating... Please wait</button>
+    <p id="status">⏰ Last Pipeline Run: <span id="lastRun">Fetching...</span></p>
+  </div>
+
+  <div class="grid" id="videoGrid">
+    <!-- Example Card -->
+    <div class="card">
+      <h3>Photosynthesis Explained</h3>
+      <p>Subject: Biology</p>
+      <p>Date: 2025-06-04</p>
+      <a href="https://youtube.com/yourvideo" target="_blank">▶ Watch</a> |
+      <a href="https://drive.google.com/yourvideo" target="_blank">⬇ Download</a>
+    </div>
+  </div>
+
+  <div class="log-box">
+    <h3>📜 Live Log Viewer</h3>
+    <iframe src="https://script.google.com/macros/s/YOUR_LOG_VIEWER_SCRIPT_ID/exec" width="100%" height="300" style="border:none;"></iframe>
+  </div>
+
+  <div class="shorts-box">
+    <h3>🎬 YouTube Shorts Tracker</h3>
+    <p>Last Generated: June 4, 2025<br>
+    Auto-subtitles: ✅ | Auto-upload: ✅</p>
+  </div>
+
+  <div class="footer">© 2025 Tlearn. NEET AMSIT Video Generator. Netflix-style UI.</div>
+
+  <script>
+    function toggleTheme() {
+      const body = document.body;
+      body.style.backgroundColor = body.style.backgroundColor === "white" ? "#141414" : "white";
+      body.style.color = body.style.color === "black" ? "white" : "black";
+    }
+
+    // Example: Simulate Last Run Fetch
+    document.getElementById("lastRun").textContent = new Date().toLocaleString();
+  </script>
 </body>
 </html>
