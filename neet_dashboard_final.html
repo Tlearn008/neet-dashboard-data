@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tlearn Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -11,7 +11,9 @@
       background-color: #141414;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      animation: slideIn 1s ease-out;
+    }
+    .slide-in {
+      animation: slideIn 1s ease-out both;
     }
     @keyframes slideIn {
       0% { transform: translateX(100%); opacity: 0; }
@@ -20,8 +22,9 @@
     th, td { border: 1px solid #333; }
     .netflix-header {
       color: #e50914;
-      font-size: 3rem;
+      font-size: 8rem;
       font-weight: bold;
+      line-height: 1;
     }
     .subject-tag {
       padding: 2px 8px;
@@ -41,38 +44,47 @@
   </style>
 </head>
 <body>
-  <main class="p-6 max-w-6xl mx-auto">
-    <div class="flex justify-between items-center mb-4">
-      <div class="netflix-header">T</div>
-      <button id="toggleDark" class="bg-gray-800 px-3 py-1 text-sm rounded-lg hover:bg-gray-600">🌙 Dark</button>
-    </div>
-    <h1 class="text-3xl font-bold text-center text-red-500 mb-6">Tlearn Dashboard</h1>
-    <input id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by topic or subject..." class="w-full mb-4 p-2 rounded bg-gray-900 text-white" />
-    <div class="text-center mb-4" id="stats" class="total-highlight"></div>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left rounded overflow-hidden border border-gray-700">
-        <thead class="bg-gray-800">
-          <tr>
-            <th class="p-2">Date</th>
-            <th class="p-2">Subject</th>
-            <th class="p-2">Topic</th>
-            <th class="p-2">YouTube Link</th>
-          </tr>
-        </thead>
-        <tbody id="log-rows"></tbody>
-      </table>
-    </div>
-    <section class="mt-10 text-center">
-      <h2 class="text-xl font-bold text-red-500">🧩 How It Works</h2>
-      <p class="text-gray-300 mb-4">A visual overview of your daily NEET + AMSIT automation system:</p>
-      <img src="neet_amsit_pipeline_flowchart.png" class="mx-auto rounded-xl max-w-full" alt="Automation Flowchart" />
-    </section>
-  </main>
+  <div class="slide-in">
+    <main class="p-6 max-w-6xl mx-auto">
+      <div class="flex justify-between items-center mb-4">
+        <div class="netflix-header">T</div>
+        <button id="toggleDark" class="bg-gray-800 px-3 py-1 text-sm rounded-lg hover:bg-gray-600">🌙 Dark</button>
+      </div>
+
+      <h1 class="text-3xl font-bold text-center text-red-500 mb-6">Tlearn Dashboard</h1>
+
+      <input id="searchInput" onkeyup="filterTable()" placeholder="🔍 Search by topic or subject..." class="w-full mb-4 p-2 rounded bg-gray-900 text-white" />
+
+      <div class="text-center mb-4" id="stats" class="total-highlight"></div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left rounded overflow-hidden border border-gray-700">
+          <thead class="bg-gray-800">
+            <tr>
+              <th class="p-2">Date</th>
+              <th class="p-2">Subject</th>
+              <th class="p-2">Topic</th>
+              <th class="p-2">YouTube Link</th>
+            </tr>
+          </thead>
+          <tbody id="log-rows"></tbody>
+        </table>
+      </div>
+
+      <section class="mt-10 text-center">
+        <h2 class="text-xl font-bold text-red-500">🧩 How It Works</h2>
+        <p class="text-gray-300 mb-4">A visual overview of your daily NEET + AMSIT automation system:</p>
+        <img src="neet_amsit_pipeline_flowchart.png" class="mx-auto rounded-xl max-w-full" alt="Automation Flowchart (Upload to GitHub repo)" />
+      </section>
+    </main>
+  </div>
+
   <script>
     document.getElementById("toggleDark").onclick = function () {
       document.body.classList.toggle("bg-white");
       document.body.classList.toggle("text-black");
     };
+
     function filterTable() {
       const input = document.getElementById("searchInput").value.toLowerCase();
       const rows = document.querySelectorAll("#log-rows tr");
@@ -80,6 +92,7 @@
         row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
       });
     }
+
     fetch("logs.json")
       .then(res => res.json())
       .then(data => {
@@ -98,6 +111,7 @@
           `;
           tbody.appendChild(tr);
         });
+
         const total = logs.length;
         const stats = Object.entries(subjectCounts).map(([k,v]) => `${k}: ${v}`).join(" | ");
         document.getElementById("stats").innerHTML = `🎬 <span class='total-highlight'>Total Videos: ${total}</span><br>${stats}`;
@@ -105,4 +119,3 @@
   </script>
 </body>
 </html>
-
